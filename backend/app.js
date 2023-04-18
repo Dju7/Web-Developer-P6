@@ -1,11 +1,15 @@
 const express = require ('express');
 const mongoose = require ('mongoose');
+const dotenv = require('dotenv');
+const userRoutes = require ('/routes/user')
 
-mongoose.connect('mongodb+srv://jlien7:Openclassmongodb75@clusterdju.kmknyil.mongodb.net/?retryWrites=true&w=majority',
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URI,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .catch((error) => console.log(`Connexion à MongoDB échouée ! erreur: ${error.message}`));
 
 const app = express();
 
@@ -21,6 +25,8 @@ app.use((req, res, next) => {
 app.use((req, res) => {
     res.json({ message: "requete ok : hello world"});
 });
+
+app.use('api/auth', userRoutes);
 
 
 
