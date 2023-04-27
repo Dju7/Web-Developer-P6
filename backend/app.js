@@ -2,6 +2,8 @@ const express = require ('express');
 const mongoose = require ('mongoose');
 const dotenv = require('dotenv');
 const userRoutes = require ('./routes/user');
+const sauceRoutes = require ('./routes/sauces');
+const path = require('path');
 
 dotenv.config();
 
@@ -20,14 +22,15 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
+  
 });
 
-app.use((req, res) => {
-    res.json({ message: "requete ok : hello world"});
+app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/public/images', express.static(path.join(__dirname, 'images')));
+
+app.get('/', (req, res) => {
+  res.json({ message: "Hello world"});
 });
-
-app.use('api/auth', userRoutes);
-
-
 
 module.exports = app;
