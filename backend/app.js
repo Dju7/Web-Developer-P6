@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
-app.use('/public/images', express.static(path.join(__dirname, 'images')));
+app.use('/public/images', express.static(path.join(__dirname, 'public', 'images')));
 
 app.get('/', (req, res) => {
   res.json({ message: "Hello world"});
