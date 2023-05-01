@@ -29,6 +29,10 @@ exports.createSauce = async (req, res, next) => {
     delete sauceObject._id
     const sauceCreate = new Sauces({
       ...sauceObject,
+      likes: 0,
+      dislikes: 0,
+      usersDisliked: [],
+      usersLiked: [],
       imageUrl: `${req.protocol}://${req.get('host')}/public/images/${req.file.filename}`
     });
     await sauceCreate.save();
@@ -62,7 +66,7 @@ exports.updateSauce = async (req, res, next) => {
   try {
     const sauceObject = req.file
       ? {
-          ...JSON.parse(req.body.thing),
+          ...JSON.parse(req.body.sauce),
           imageUrl: `${req.protocol}://${req.get("host")}/public/images/${req.file.filename}`,
         }
       : { ...req.body };
@@ -86,13 +90,13 @@ exports.updateSauce = async (req, res, next) => {
 
 // like / dislike system
 
-/*
 exports.likeOrDislike = async (req, res) => {
   try {
     const sauce = await Sauces.findOne({ _id: req.params.id });
-    const userLiked = sauce.usersLiked.includes(req.body.userId);
-    if (!userLiked && req.body.like === 1) {
-      await Sauce.updateOne(
+    const userVoteLike = sauce.usersLiked.includes(req.body.userId);
+    const userVoteDislike = sauce.usersDisliked.includes(req.body.userId);
+    if (!userVoteLike && req.body.like === 1) {
+      await Sauces.updateOne(
         { _id: req.params.id },
         {
           $inc: { likes: 1 },
@@ -100,7 +104,7 @@ exports.likeOrDislike = async (req, res) => {
         }
       );
       res.status(200).json({ message: "Vous avez ajouté 1 like" });
-    } else if (!userLiked && req.body.like === -1) {
+    } else if (!userVoteDislike && req.body.like === -1) {
       await Sauces.updateOne(
         { _id: req.params.id },
         {
@@ -116,4 +120,4 @@ exports.likeOrDislike = async (req, res) => {
     res.status(400).json({ error });
   }
 };
-*/
+
