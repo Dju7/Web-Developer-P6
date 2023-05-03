@@ -82,9 +82,8 @@ exports.updateSauce = async (req, res, next) => {
     const sauceUpdate = await Sauces.findOne({ _id: req.params.id });
     if (sauceUpdate.userId !== req.auth.userId) {
       return res.status(401).json({ message: "Not authorized" });
-
-      //Mise a jour de l'image et supression de la précédente
     }
+
     if (req.file) {
       const filename = sauceUpdate.imageUrl.split("/public/images/")[1];
       fs.unlink(`./public/images/${filename}`, async () => {
@@ -94,12 +93,13 @@ exports.updateSauce = async (req, res, next) => {
         );
         return res.status(200).json({ message: "Sauce modifiée !" });
       });
+    } else {
+      await Sauces.updateOne(
+        { _id: req.params.id },
+        { ...sauceObject, _id: req.params.id }
+      );
+      return res.status(200).json({ message: "Sauce modifiée !" });
     }
-    await Sauces.updateOne(
-      { _id: req.params.id },
-      { ...sauceObject, _id: req.params.id }
-    );
-    return res.status(200).json({ message: "Sauce modifiée !" });
   } catch (error) {
     res.status(400).json({ error });
   }

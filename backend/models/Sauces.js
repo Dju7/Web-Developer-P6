@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+const mongodbErrors = require('mongoose-mongodb-errors');
+
+mongoose.plugin(mongodbErrors);
+
+// Modèle sauce
 
 const sauceSchema = mongoose.Schema ({
   userId : {type: String, required : true },
