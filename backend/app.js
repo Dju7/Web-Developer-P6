@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const helmet = require('helmet');
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("./routes/sauces");
@@ -7,6 +8,7 @@ const path = require("path");
 
 dotenv.config();
 
+//Connection serveur base de donnée
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -20,7 +22,12 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'same-site' }
+}));
 
+
+//configration CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -41,6 +48,7 @@ app.use(
   express.static(path.join(__dirname, "public", "images"))
 );
 
+// Hello World
 app.get("/", (req, res) => {
   res.json({ message: "Hello world" });
 });
